@@ -40,13 +40,6 @@
 
                 // Lấy subEntityId từ context Teams gửi xuống
                 if (context.page && context.page.subEntityId) {
-                    let param = context.page.subEntityId; // Giá trị nhận được: "/report/2026-04-29"
-
-                    // Chuẩn hóa chuỗi: Nếu người dùng truyền cả path, ta trích xuất lấy ngày hoặc ngược lại
-                    let displayPath = param;
-                    if (!param.startsWith('/')) {
-                        displayPath = `/report/${param}`;
-                    }
 
                     // Đổi giao diện giả lập sang trạng thái DETAIL màu xanh lá
                     statusBox.className = "status detail";
