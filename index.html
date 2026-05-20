@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams Notification Test</title>
+    <script src="https://res.cdn.office.net/teams-js/2.22.0/js/MicrosoftTeams.min.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f3f2f1; padding: 30px; text-align: center; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: inline-block; max-width: 500px; width: 100%; }
+        .status { padding: 10px; border-radius: 4px; font-weight: bold; margin-bottom: 20px; }
+        .home { background: #e1dfdd; color: #323130; }
+        .detail { background: #dff6dd; color: #107c41; border: 2px dashed #107c41; }
+        h1 { color: #6264a7; margin-top: 0; }
+        p { color: #616161; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🔔 Hệ Thống Đang Chạy Thử Nghiệm</h1>
+        <hr>
+        
+        <div id="view-status" class="status home">
+            ĐANG TẢI TRANG CHỦ MẶC ĐỊNH...
+        </div>
+
+        <p id="message">Nếu bạn thấy dòng chữ này, nghĩa là bạn vừa click mở trực tiếp ứng dụng từ thanh Menu bên trái (Trang chủ mặc định).</p>
+    </div>
+
+<script>
+    if (microsoftTeams) {
+        microsoftTeams.app.initialize().then(() => {
+            console.log("Teams SDK đã sẵn sàng.");
+            console.log("APP ", microsoftTeams.app);
+            microsoftTeams.app.getContext().then((context) => {
+                console.log("Context ", context);
+                const statusBox = document.getElementById('view-status');
+                const messageBox = document.getElementById('message');
+
+                // Lấy subEntityId từ context Teams gửi xuống
+                if (context.page && context.page.subEntityId) {
+                    let param = context.page.subEntityId; // Giá trị nhận được: "/report/2026-04-29"
+
+                    // Chuẩn hóa chuỗi: Nếu người dùng truyền cả path, ta trích xuất lấy ngày hoặc ngược lại
+                    let displayPath = param;
+                    if (!param.startsWith('/')) {
+                        displayPath = `/report/${param}`;
+                    }
+
+                    // Đổi giao diện giả lập sang trạng thái DETAIL màu xanh lá
+                    statusBox.className = "status detail";
+                    statusBox.innerHTML = `ỨNG DỤNG ĐÃ ĐIỀU HƯỚNG ĐẾN TRANG DETAIL!`;
+                    
+                    messageBox.innerHTML = `
+                        <p style="font-size: 18px; font-weight: bold; color: #107c41;">
+                            🎉 Thành công rực rỡ!
+                        </p>
+                        <p>Hệ thống bắt được subEntityId từ Quả Chuông: <b>${param}</b></p>
+                        <p>Đường dẫn Route tương ứng trong ứng dụng: <br> 
+                        <code style="background: #f3f2f1; padding: 4px 8px; border-radius: 4px; color: #d63384; font-weight: bold;">
+                            https://baobaihoc.io.vn${displayPath}
+                        </code></p>
+                    `;
+                } else {
+                    statusBox.innerHTML = "BẠN ĐANG Ở TRANG CHỦ (HOME)";
+                }
+            }).catch((err) => {
+                document.getElementById('view-status').innerHTML = "Lỗi lấy Context: " + err;
+            });
+        }).catch((err) => {
+            document.getElementById('view-status').innerHTML = "Lỗi khởi tạo SDK: " + err;
+        });
+    }
+</script>
+</body>
+</html>
+
